@@ -1,34 +1,57 @@
 #include <Python.h>
+#include "xxhash.h"
 
-// Actual method to be wrapped
-int slow_calc(int x, int a, int b) {
-    return a * x + b;
+unsigned long long slow_calc(const void* buffer, size_t length)
+{
+    unsigned long long const seed = 0;   /* or any other value */
+    unsigned long long const hash = XXH64(buffer, length, seed);
+    return hash;
 }
 
 // Define wrapper methods to be called in Python
-static PyObject *_slow_calc(PyObject *self, PyObject *args, PyObject *kwargs) {
+// static PyObject *_slow_calc(PyObject *self, PyObject *args, PyObject *kwargs) {
+//     // Arguments
+//     void * buffer; int length = 0;
+//     static char *kwlist[] = {"buffer", "length", NULL};
+//     // Return value
+//     unsigned long long res;
+
+//     // If parse failure (0), return NULL
+//     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "K|s*i", kwlist, &buffer, &length)) {
+//         return NULL;
+//     }
+
+//     // Call the actual method, store the result
+//     res = slow_calc(buffer, length);
+
+//     // Wrap the return value into PyObject
+//     return Py_BuildValue("K", res);
+// }
+
+static PyObject *_slow_calc2(PyObject* self, PyObject* args) {
     // Arguments
-    int x, a = 0, b = 0;
-    static char *kwlist[] = {"x", "a", "b", NULL};
+    // void * buffer; int length = 0;
+    char* buffer; int length = 0;
+    
     // Return value
-    int res;
+    unsigned long long res;
 
     // If parse failure (0), return NULL
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i|ii", kwlist, &x, &a, &b)) {
+    if (!PyArg_ParseTuple(args, "si", &buffer, &length)) {
         return NULL;
     }
 
     // Call the actual method, store the result
-    res = slow_calc(x, a, b);
+    res = slow_calc(buffer, length);
 
     // Wrap the return value into PyObject
-    return Py_BuildValue("i", res);
+    return Py_BuildValue("K", res);
 }
 
 // Construct the Module's Method Table (list the methods to expose)
 static PyMethodDef SpeedupPerformanceMethods[] = {
     // slow_calc method takes in both positional & keyword parameters
-    {"slow_calc", (PyCFunction) _slow_calc, METH_VARARGS | METH_KEYWORDS, "A slow calculation method."},
+    {"slow_calc", _slow_calc2, METH_VARARGS, "A slow calculation method."},
     // Ends with an entry with NULL values
     {NULL, NULL, 0, NULL}
 };

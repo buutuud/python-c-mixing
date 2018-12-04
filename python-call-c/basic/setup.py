@@ -1,7 +1,7 @@
 from distutils.core import setup, Extension
 
 speedup_performance_module = Extension('speedup_performance',
-                                       sources=['speedup_performance.c'])
+                                       sources=['speedup_performance.c', 'xxhash.c'])
 
 setup(name='SpeedupPerformance',
       description='A package containing modules for speeding up performance.',
