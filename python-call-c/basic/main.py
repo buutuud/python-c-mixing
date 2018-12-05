@@ -1,3 +1,3 @@
-from speedup_performance import slow_calc
+from xxhash import hash_calc
 
-print(slow_calc("booklist", 8))
+print(hash_calc("booklist", 8))
