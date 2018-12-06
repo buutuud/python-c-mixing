@@ -1,7 +1,7 @@
 from distutils.core import setup, Extension
 
 xxhash_module = Extension('xxhash',
-                                       sources=['xxhash.c', 'speedup_performance.c'])
+                                       sources=['xxhash.c', 'py_xxhash.c'])
 
 setup(name='SpeedupPerformance',
       description='xxhash',
